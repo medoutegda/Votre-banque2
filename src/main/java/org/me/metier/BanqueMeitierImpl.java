@@ -2,6 +2,7 @@ package org.me.metier;
 
 import java.util.Date;
 
+
 import org.me.dao.CompteRepository;
 import org.me.dao.OperationRepository;
 import org.me.entities.Compte;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.*;
 
 @Service
 @Transactional
@@ -24,10 +24,12 @@ public class BanqueMeitierImpl implements IBanqueMetier {
 	private CompteRepository compteRespository;
 	@Autowired
 	private OperationRepository operationRespository;
+	
+	
 	@Override
 	public Compte consulterCompte(String codeCpte) {
 		Compte cp = compteRespository.getOne(codeCpte);
-		if(cp==null) throw new RuntimeException("Compte introvable");
+		if(cp==null) throw new RuntimeException("Compte introuvable");
 		return cp;
 	}
 
@@ -59,6 +61,8 @@ public class BanqueMeitierImpl implements IBanqueMetier {
 
 	@Override
 	public void virement(String codecpte1, String codecpte2, double montant) {
+		if(codecpte1.equals(codecpte2))
+			throw new RuntimeException("Imossible le virement sur le meme compte");
 		retirer(codecpte1, montant);
 		verser(codecpte2, montant);
 		
